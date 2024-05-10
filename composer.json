@@ -1,0 +1,10 @@
+{
+  "name": "jrayln/phpmvc-core",
+  "authors": [
+    {
+      "name": "Michael Morales",
+      "email": "michael@jrayln.com"
+    }
+  ],
+  "require": {}
+}
