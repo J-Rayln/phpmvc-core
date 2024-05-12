@@ -10,4 +10,9 @@ class Route
     {
         Application::$app->router->get($uri, $handler);
     }
+
+    public static function post(string $uri, array|string|\Closure $handler): void
+    {
+        Application::$app->router->post($uri, $handler);
+    }
 }
