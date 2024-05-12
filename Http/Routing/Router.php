@@ -1,9 +1,11 @@
 <?php
 
-namespace JonathanRayln\Core\Http;
+namespace JonathanRayln\Core\Http\Routing;
 
 use JonathanRayln\Core\Application;
 use JonathanRayln\Core\Exceptions\NotFoundException;
+use JonathanRayln\Core\Http\Request;
+use JonathanRayln\Core\Http\Response;
 
 class Router
 {

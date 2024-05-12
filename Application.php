@@ -7,7 +7,7 @@ use JonathanRayln\Core\Contracts\UserInterface;
 use JonathanRayln\Core\Database\Database;
 use JonathanRayln\Core\Http\Request;
 use JonathanRayln\Core\Http\Response;
-use JonathanRayln\Core\Http\Router;
+use JonathanRayln\Core\Http\Routing\Router;
 
 class Application
 {
