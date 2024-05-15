@@ -4,9 +4,10 @@ namespace JonathanRayln\Core;
 
 class View
 {
+    /** @var string Page title */
     public string $title = '';
 
-    public function renderView($view, $params = [])
+    public function renderView($view, $params = []): string
     {
         $viewContent = $this->renderOnlyView($view, $params);
         $layoutContent = $this->layoutContent();
@@ -14,13 +15,7 @@ class View
         return str_replace('{{content}}', $viewContent, $layoutContent);
     }
 
-    public function renderContent($viewContent): string
-    {
-        $layoutContent = $this->layoutContent();
-        return str_replace('{{content}}', $viewContent, $layoutContent);
-    }
-
-    protected function layoutContent()
+    protected function layoutContent(): string
     {
         $layout = Application::$app->layout;
 
@@ -33,7 +28,7 @@ class View
         return ob_get_clean();
     }
 
-    protected function renderOnlyView($view, $params)
+    protected function renderOnlyView($view, $params): string
     {
         foreach ($params as $key => $value) {
             $$key = $value;
