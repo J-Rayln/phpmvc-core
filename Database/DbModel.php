@@ -13,7 +13,43 @@ abstract class DbModel extends Model
 
     abstract public function attributes(): array;
 
-    public function save()
+    /**
+     * @return false|array
+     */
+    public function findAll(): false|array
+    {
+        $tableName = static::tableName();
+
+        $statement = self::prepare("SELECT * FROM $tableName");
+
+        $statement->execute();
+
+        return $statement->fetchAll(\PDO::FETCH_OBJ);
+    }
+
+    /**
+     * @param $where
+     * @return false|object|null
+     */
+    public static function findOne($where): false|object|null
+    {
+        $tableName = static::tableName();
+        $attributes = array_keys($where);
+
+        $sql = implode("AND", array_map(fn($attr) => "$attr = :$attr", $attributes));
+
+        $statement = self::prepare("SELECT * FROM $tableName WHERE $sql");
+
+        foreach ($where as $key => $item) {
+            $statement->bindValue(":$key", $item);
+        }
+
+        $statement->execute();
+
+        return $statement->fetchObject(static::class);
+    }
+
+    public function save(): bool
     {
         $tableName = static::tableName();
         $attributes = $this->attributes();
@@ -31,20 +67,7 @@ abstract class DbModel extends Model
         return $statement->execute();
     }
 
-    public static function findOne($where)
-    {
-        $tableName = static::tableName();
-        $attributes = array_keys($where);
-        $sql = implode("AND", array_map(fn($attr) => "$attr = :$attr", $attributes));
-        $statement = self::prepare("SELECT * FROM $tableName WHERE $sql");
-        foreach ($where as $key => $item) {
-            $statement->bindValue(":$key", $item);
-        }
-        $statement->execute();
-        return $statement->fetchObject(static::class);
-    }
-
-    public static function prepare($sql)
+    public static function prepare($sql): false|\PDOStatement
     {
         return Application::$app->db->pdo->prepare($sql);
     }
