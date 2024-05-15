@@ -6,7 +6,7 @@ use JonathanRayln\Core\Base\Model;
 
 class Form
 {
-    public static function begin($action, $method)
+    public static function begin(string $action, string $method): Form
     {
         echo sprintf('<form action="%s" method="%s">',
             $action, $method);
@@ -14,17 +14,17 @@ class Form
         return new Form();
     }
 
-    public static function end()
+    public static function end(): void
     {
         echo '</form>';
     }
 
-    public function input(Model $model, $attribute)
+    public function input(Model $model, string $attribute): InputField
     {
         return new InputField($model, $attribute);
     }
 
-    public function textarea(Model $model, $attribute)
+    public function textarea(Model $model, string $attribute): TextareaField
     {
         return new TextareaField($model, $attribute);
     }
