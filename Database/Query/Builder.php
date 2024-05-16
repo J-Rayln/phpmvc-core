@@ -1,10 +1,10 @@
 <?php
 
-namespace JonathanRayln\Core\Database;
+namespace JonathanRayln\Core\Database\Query;
 
 use PDO;
 
-class QueryBuilder
+class Builder
 {
     protected string $table;
     protected string $fields = '*';
