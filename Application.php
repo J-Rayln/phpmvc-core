@@ -2,6 +2,7 @@
 
 namespace JonathanRayln\Core;
 
+use Exception;
 use JonathanRayln\Core\Base\Controller;
 use JonathanRayln\Core\Contracts\UserInterface;
 use JonathanRayln\Core\Database\Database;
@@ -55,14 +56,18 @@ class Application
         }
     }
 
-    public function run()
+    public function run(): void
     {
+        $this->loadAppDefinedFunctions();
+
+        $this->loadHelpers();
+
         $this->triggerEvent(self::EVENT_BEFORE_REQUEST);
 
         try {
             echo $this->router->resolve();
-        } catch (\Exception $e) {
-            $this->response->setStatusCode($e->getCode()); // TODO: this line causes an error for codes that are not INT, like PDO errors.
+        } catch (Exception $e) {
+            $this->response->setStatusCode($e->getCode()); // FIXME: this line causes an error for codes that are not INT, like PDO errors.
 
             echo $this->view->renderView('_error', [
                 'exception' => $e,
@@ -70,7 +75,7 @@ class Application
         }
     }
 
-    public function triggerEvent($eventName)
+    public function triggerEvent(string $eventName): void
     {
         $callbacks = $this->eventListeners[$eventName] ?? [];
 
@@ -79,7 +84,7 @@ class Application
         }
     }
 
-    public function on($eventName, $callback)
+    public function on(string $eventName, mixed $callback): void
     {
         $this->eventListeners[$eventName][] = $callback;
     }
@@ -94,7 +99,7 @@ class Application
         $this->controller = $controller;
     }
 
-    public function login(UserInterface $user)
+    public function login(UserInterface $user): true
     {
         $this->user = $user;
         $primaryKey = $user->primaryKey();
@@ -105,15 +110,32 @@ class Application
         return true;
     }
 
-    public function logout()
+    public function logout(): void
     {
         $this->user = null;
 
         $this->session->remove('user');
     }
 
-    public static function isGuest()
+    public static function isGuest(): bool
     {
         return !self::$app->user;
+    }
+
+    private function loadAppDefinedFunctions(): void
+    {
+        if (file_exists($appFunctions = Application::$ROOT_DIR . '/App/functions.php')) {
+            require $appFunctions;
+        }
+    }
+
+    private function loadHelpers(): void
+    {
+        foreach (scandir(dirname(__FILE__) . '/helpers') as $filename) {
+            $path = dirname(__FILE__) . '/helpers/' . $filename;
+            if (is_file($path)) {
+                require $path;
+            }
+        }
     }
 }
