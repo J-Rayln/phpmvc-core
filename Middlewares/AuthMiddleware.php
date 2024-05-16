@@ -4,6 +4,7 @@ namespace JonathanRayln\Core\Middlewares;
 
 use JonathanRayln\Core\Application;
 use JonathanRayln\Core\Exceptions\ForbiddenException;
+use JonathanRayln\Core\Http\Response;
 
 class AuthMiddleware extends BaseMiddleware
 {
@@ -17,7 +18,7 @@ class AuthMiddleware extends BaseMiddleware
         $this->actions = $actions;
     }
 
-    public function execute()
+    public function execute(Response $response)
     {
         if (Application::isGuest()) {
             if (empty($this->actions) || in_array(Application::$app->controller->action, $this->actions)) {

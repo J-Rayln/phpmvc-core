@@ -103,7 +103,7 @@ class Router
             $callback[0] = $controller;
 
             foreach ($controller->getMiddleware() as $middleware) {
-                $middleware->execute();
+                $middleware->execute($this->response);
             }
         }
 
