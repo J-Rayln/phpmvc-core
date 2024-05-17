@@ -21,8 +21,6 @@ class Builder
     {
         $this->table = $table;
 
-        var_dump($this->table);
-
         return $this;
     }
 
