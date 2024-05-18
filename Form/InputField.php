@@ -6,34 +6,61 @@ use JonathanRayln\Core\Base\Model;
 
 class InputField extends BaseField
 {
-    public const TYPE_TEXT = 'text';
-    public const TYPE_PASSWORD = 'password';
-    public const TYPE_NUMBER = 'number';
+    private const TYPE_TEXT = 'text';
+    private const TYPE_PASSWORD = 'password';
+    private const TYPE_NUMBER = 'number';
+    private const TYPE_EMAIL = 'email';
+    private const TYPE_HIDDEN = 'hidden';
+    private string $type;
 
-    public string $type;
 
-    public function __construct(Model $model, string $attribute)
+    public function __construct(Model $model, string $attribute, ?string $placeholder = null)
     {
+        $this->placeholder = $placeholder;
         $this->type = self::TYPE_TEXT;
 
         parent::__construct($model, $attribute);
     }
 
-    public function passwordField()
+    public function passwordField(): static
     {
         $this->type = self::TYPE_PASSWORD;
 
         return $this;
     }
 
-    public function renderInput(): string
+    public function emailField(): static
     {
-        return sprintf(' <input type="%s" id="%s" name="%s" value="%s" class="form-control%s">',
+        $this->type = self::TYPE_EMAIL;
+
+        return $this;
+    }
+
+    public function numberField(): static
+    {
+        $this->type = self::TYPE_NUMBER;
+
+        return $this;
+    }
+
+    public function hiddenField(): static
+    {
+        $this->type = self::TYPE_HIDDEN;
+
+        return $this;
+    }
+
+    /** @inheritDoc */
+    protected function renderInput(): string
+    {
+        return sprintf('<input type="%s" id="%s" name="%s" value="%s" class="%s"%s%s>',
             $this->type,
             $this->attribute,
             $this->attribute,
             $this->model->{$this->attribute},
-            $this->model->hasError($this->attribute) ? ' is-invalid' : ''
+            $this->renderInputClasses(),
+            $this->placeholder ? ' placeholder="' . $this->placeholder . '"' : '',
+            $this->disabled ? ' disabled' : ''
         );
     }
 }
